@@ -79,10 +79,6 @@ npm run dev
 
 yarn dev
 
-Open http://localhost:8000 in your browser to see the application.
+Open http://localhost:3000 in your browser to see the application.
 
-🤝 Acknowledgements & Attribution
 
-Huge thanks to the creator for providing a comprehensive learning resource!
-
-Your Name: [Your Name or GitHub Handle]
