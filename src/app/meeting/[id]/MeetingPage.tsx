@@ -19,6 +19,8 @@ import {
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+// 1. Keep the import here
+import MeetingRecorder from "@/components/MeetingRecorder";
 
 interface MeetingPageProps {
   id: string;
@@ -26,7 +28,6 @@ interface MeetingPageProps {
 
 export default function MeetingPage({ id }: MeetingPageProps) {
   const { user, isLoaded: userLoaded } = useUser();
-
   const { call, callLoading } = useLoadCall(id);
 
   if (!userLoaded || callLoading) {
@@ -60,12 +61,10 @@ export default function MeetingPage({ id }: MeetingPageProps) {
 
 function MeetingScreen() {
   const call = useStreamCall();
-
   const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
 
   const callEndedAt = useCallEndedAt();
   const callStartsAt = useCallStartsAt();
-
   const [setupComplete, setSetupComplete] = useState(false);
 
   async function handleSetupComplete() {
@@ -74,7 +73,6 @@ function MeetingScreen() {
   }
 
   const callIsInFuture = callStartsAt && new Date(callStartsAt) > new Date();
-
   const callHasEnded = !!callEndedAt;
 
   if (callHasEnded) {
@@ -109,12 +107,9 @@ interface SetupUIProps {
 
 function SetupUI({ onSetupComplete }: SetupUIProps) {
   const call = useStreamCall();
-
   const { useMicrophoneState, useCameraState } = useCallStateHooks();
-
   const micState = useMicrophoneState();
   const camState = useCameraState();
-
   const [micCamDisabled, setMicCamDisabled] = useState(false);
 
   useEffect(() => {
@@ -148,25 +143,33 @@ function SetupUI({ onSetupComplete }: SetupUIProps) {
         Join with mic and camera off
       </label>
       <Button onClick={onSetupComplete}>Join meeting</Button>
+      {/* ❌ REMOVED MeetingRecorder FROM HERE */}
     </div>
   );
 }
 
 function CallUI() {
   const { useCallCallingState } = useCallStateHooks();
-
   const callingState = useCallCallingState();
 
   if (callingState !== CallingState.JOINED) {
     return <Loader2 className="mx-auto animate-spin" />;
   }
 
-  return <FlexibleCallLayout />;
+  return (
+    <div className="relative h-full w-full">
+      {/* Wrapper div to hold the layout and the floating button */}
+
+      <FlexibleCallLayout />
+
+      {/* ✅ MOVED MeetingRecorder HERE */}
+      <MeetingRecorder />
+    </div>
+  );
 }
 
 function UpcomingMeetingScreen() {
   const call = useStreamCall();
-
   return (
     <div className="flex flex-col items-center gap-6">
       <p>
